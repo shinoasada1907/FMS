@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commercial PMS - Live Enterprise System & Architecture Simulation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- Chart.js for BI graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons for clean visuals -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-logo">
+                    <i data-lucide="building-2"></i>
+                </div>
+                <div class="brand-name">
+                    <h1>Commercial PMS</h1>
+                    <span>Enterprise Edition</span>
+                </div>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active" data-tab="dashboard">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>BI Analytics</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="floorplan">
+                    <i data-lucide="map"></i>
+                    <span>Floor Plan Hub</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="crm">
+                    <i data-lucide="users"></i>
+                    <span>CRM & Leases</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="billing">
+                    <i data-lucide="activity"></i>
+                    <span>Hangfire Billing</span>
+                    <span class="badge" id="job-count-badge">Idle</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="architecture">
+                    <i data-lucide="network"></i>
+                    <span>Architecture Hub</span>
+                </a>
+            </nav>
+            
+            <div class="system-status-card">
+                <div class="status-header">
+                    <span class="status-dot online"></span>
+                    <span class="status-label">SignalR Connected</span>
+                </div>
+                <p>Simulated live WebSocket stream active.</p>
+                <div class="server-time">
+                    <i data-lucide="clock"></i>
+                    <span id="live-clock">00:00:00</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Header Bar -->
+            <header class="top-header">
+                <div class="header-search">
+                    <i data-lucide="search"></i>
+                    <input type="text" placeholder="Search spaces, tenants, contracts..." disabled>
+                </div>
+                <div class="header-actions">
+                    <div class="notification-trigger" id="notif-btn">
+                        <i data-lucide="bell"></i>
+                        <span class="notification-count" id="notif-count">0</span>
+                    </div>
+                    <div class="user-profile">
+                        <div class="avatar">AD</div>
+                        <div class="user-info">
+                            <span class="user-name">Admin Director</span>
+                            <span class="user-role">Super Administrator</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dynamic Tab Content -->
+            <div class="content-body">
+                
+                <!-- Tab: Dashboard / BI -->
+                <section class="tab-pane active" id="tab-dashboard">
+                    <div class="pane-header">
+                        <h2>BI Analytics & KPI Dashboard</h2>
+                        <p>Real-time commercial real estate financial metrics and performance tracking.</p>
+                    </div>
+
+                    <!-- Top KPI Cards -->
+                    <div class="kpi-grid">
+                        <div class="kpi-card">
+                            <div class="kpi-icon-wrapper color-blue">
+                                <i data-lucide="percent"></i>
+                            </div>
+                            <div class="kpi-info">
+                                <h3>Occupancy Rate</h3>
+                                <div class="kpi-value" id="kpi-occupancy">0.0%</div>
+                                <div class="kpi-footer text-green">
+                                    <i data-lucide="trending-up"></i>
+                                    <span>Based on active leases area</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card">
+                            <div class="kpi-icon-wrapper color-purple">
+                                <i data-lucide="calendar"></i>
+                            </div>
+                            <div class="kpi-info">
+                                <h3>WAULT (Weighted Avg)</h3>
+                                <div class="kpi-value" id="kpi-wault">0.0 mo</div>
+                                <div class="kpi-footer text-purple">
+                                    <i data-lucide="help-circle" title="Weighted Average Unexpired Lease Term by monthly rent revenue."></i>
+                                    <span>Unexpired lease duration</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card">
+                            <div class="kpi-icon-wrapper color-green">
+                                <i data-lucide="dollar-sign"></i>
+                            </div>
+                            <div class="kpi-info">
+                                <h3>Monthly Rent Roll</h3>
+                                <div class="kpi-value" id="kpi-rentroll">$0</div>
+                                <div class="kpi-footer text-green" id="kpi-rentroll-growth">
+                                    <i data-lucide="shield-check"></i>
+                                    <span>Calculated from active contracts</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card">
+                            <div class="kpi-icon-wrapper color-amber">
+                                <i data-lucide="shield-alert"></i>
+                            </div>
+                            <div class="kpi-info">
+                                <h3>Active Bank Guarantees</h3>
+                                <div class="kpi-value" id="kpi-deposits">0</div>
+                                <div class="kpi-footer text-green" id="deposit-alerts-text">
+                                    <i data-lucide="shield-check"></i>
+                                    <span>All active & secured</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts & Ledger Grid -->
+                    <div class="dashboard-grid">
+                        <!-- Revenue projection chart -->
+                        <div class="dashboard-panel chart-panel">
+                            <div class="panel-header">
+                                <h3>12-Month Rent Roll Cashflow Projection</h3>
+                                <p>Reflective of annual escalation rates and incentive deductions.</p>
+                            </div>
+                            <div class="panel-body chart-container">
+                                <canvas id="rentRollChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Brokerage ledger -->
+                        <div class="dashboard-panel ledger-panel">
+                            <div class="panel-header">
+                                <h3>Brokerage Commission Ledger</h3>
+                                <p>Simulated multi-stage payouts for internal and external agents.</p>
+                            </div>
+                            <div class="panel-body">
+                                <div class="table-container">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Broker Name</th>
+                                                <th>Unit Code</th>
+                                                <th>Commission</th>
+                                                <th>Stage 1 (50%)</th>
+                                                <th>Stage 2 (50%)</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="brokerage-ledger-rows">
+                                            <!-- Dynamic content -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Tab: Floor Plan -->
+                <section class="tab-pane" id="tab-floorplan">
+                    <div class="pane-header">
+                        <h2>Asset Space Hub & Interactive Floor Plan</h2>
+                        <p>Visual floor layouts synced real-time via simulated SignalR from the CRM Pipeline.</p>
+                    </div>
+
+                    <div class="floorplan-layout">
+                        <!-- Left Side: Floor Visualizer -->
+                        <div class="floor-visualizer-card">
+                            <div class="floor-selector">
+                                <span class="floor-btn active">Floor 1</span>
+                                <span class="floor-btn disabled">Floor 2</span>
+                                <span class="floor-btn disabled">Floor 3</span>
+                            </div>
+                            <div class="floorplan-svg-container">
+                                <div class="building-grid">
+                                    <div class="grid-cell entrance-hall">
+                                        <div class="cell-content">
+                                            <i data-lucide="door-open"></i>
+                                            <span>Main Entrance Hall & Reception</span>
+                                        </div>
+                                    </div>
+                                    <div class="grid-cell unit-space vacant" data-unit-id="U-101">
+                                        <div class="unit-badge">101</div>
+                                        <div class="unit-name">Unit 101</div>
+                                        <div class="unit-meta">F&B • 120m²</div>
+                                        <div class="unit-status">Vacant</div>
+                                    </div>
+                                    <div class="grid-cell unit-space vacant" data-unit-id="U-102">
+                                        <div class="unit-badge">102</div>
+                                        <div class="unit-name">Unit 102</div>
+                                        <div class="unit-meta">Retail • 85m²</div>
+                                        <div class="unit-status">Vacant</div>
+                                    </div>
+                                    <div class="grid-cell elevator-shaft">
+                                        <div class="cell-content">
+                                            <i data-lucide="arrow-up-down"></i>
+                                            <span>Elevators</span>
+                                        </div>
+                                    </div>
+                                    <div class="grid-cell unit-space vacant" data-unit-id="U-103">
+                                        <div class="unit-badge">103</div>
+                                        <div class="unit-name">Unit 103</div>
+                                        <div class="unit-meta">Office • 210m²</div>
+                                        <div class="unit-status">Vacant</div>
+                                    </div>
+                                    <div class="grid-cell corridor">
+                                        <div class="cell-content"><span>Corridor Area</span></div>
+                                    </div>
+                                    <div class="grid-cell unit-space vacant" data-unit-id="U-104">
+                                        <div class="unit-badge">104</div>
+                                        <div class="unit-name">Unit 104</div>
+                                        <div class="unit-meta">Retail • 150m²</div>
+                                        <div class="unit-status">Vacant</div>
+                                    </div>
+                                    <div class="grid-cell unit-space vacant" data-unit-id="U-105">
+                                        <div class="unit-badge">105</div>
+                                        <div class="unit-name">Unit 105</div>
+                                        <div class="unit-meta">F&B • 180m²</div>
+                                        <div class="unit-status">Vacant</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="floorplan-legend">
+                                <div class="legend-item"><span class="legend-dot color-vacant"></span> Vacant (Trống)</div>
+                                <div class="legend-item"><span class="legend-dot color-negotiating"></span> Negotiating (Đàm phán)</div>
+                                <div class="legend-item"><span class="legend-dot color-leased"></span> Leased (Đã thuê)</div>
+                            </div>
+                        </div>
+
+                        <!-- Right Side: Unit Detailed Panel -->
+                        <div class="unit-details-panel">
+                            <div class="panel-header">
+                                <h3>Unit Specification</h3>
+                                <p>Select an office/retail unit on the map to inspect.</p>
+                            </div>
+                            <div id="unit-spec-content" class="spec-empty">
+                                <i data-lucide="info" class="empty-icon"></i>
+                                <p>Click a unit on the floor plan map to view details, active lease conditions, and tenant history.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Tab: CRM & Leases -->
+                <section class="tab-pane" id="tab-crm">
+                    <div class="pane-header">
+                        <h2>CRM Leasing Pipeline & Complex Contracts</h2>
+                        <p>Manage customer journeys using C# <i>Stateless</i> state machine logic and configure escalation terms & free rent.</p>
+                    </div>
+
+                    <div class="crm-workspace">
+                        <!-- CRM Kanban Columns -->
+                        <div class="kanban-board">
+                            <!-- Column 1: Prospect -->
+                            <div class="kanban-col" data-stage="Prospect">
+                                <div class="col-header">
+                                    <span class="col-title">Prospect</span>
+                                    <span class="col-count" id="count-prospect">0</span>
+                                </div>
+                                <div class="kanban-cards" id="list-prospect">
+                                    <!-- Dynamic Cards -->
+                                </div>
+                            </div>
+
+                            <!-- Column 2: Negotiation -->
+                            <div class="kanban-col" data-stage="Negotiation">
+                                <div class="col-header">
+                                    <span class="col-title">Negotiation</span>
+                                    <span class="col-count" id="count-negotiation">0</span>
+                                </div>
+                                <div class="kanban-cards" id="list-negotiation">
+                                    <!-- Dynamic Cards -->
+                                </div>
+                            </div>
+
+                            <!-- Column 3: LOI (Letter of Intent) -->
+                            <div class="kanban-col" data-stage="LOI">
+                                <div class="col-header">
+                                    <span class="col-title">LOI Issued</span>
+                                    <span class="col-count" id="count-loi">0</span>
+                                </div>
+                                <div class="kanban-cards" id="list-loi">
+                                    <!-- Dynamic Cards -->
+                                </div>
+                            </div>
+
+                            <!-- Column 4: HOA (Heads of Agreement) -->
+                            <div class="kanban-col" data-stage="HOA">
+                                <div class="col-header">
+                                    <span class="col-title">HOA Signed</span>
+                                    <span class="col-count" id="count-hoa">0</span>
+                                </div>
+                                <div class="kanban-cards" id="list-hoa">
+                                    <!-- Dynamic Cards -->
+                                </div>
+                            </div>
+
+                            <!-- Column 5: Signed -->
+                            <div class="kanban-col" data-stage="Signed">
+                                <div class="col-header">
+                                    <span class="col-title">Lease Signed</span>
+                                    <span class="col-count" id="count-signed">0</span>
+                                </div>
+                                <div class="kanban-cards" id="list-signed">
+                                    <!-- Dynamic Cards -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Contract & Escalation Configuration Side Drawer -->
+                        <div class="lease-config-drawer" id="lease-drawer">
+                            <div class="drawer-header">
+                                <h3>Lease Escalation & Incentive Engine</h3>
+                                <button class="btn-close-drawer" id="close-drawer-btn">&times;</button>
+                            </div>
+                            <div class="drawer-body">
+                                <form id="lease-form">
+                                    <input type="hidden" id="form-lead-id">
+                                    <input type="hidden" id="form-unit-id">
+                                    
+                                    <div class="form-group-row">
+                                        <div class="form-group">
+                                            <label>Tenant / Brand</label>
+                                            <input type="text" id="lease-tenant" readonly>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Target Unit</label>
+                                            <input type="text" id="lease-unit-code" readonly>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group-row">
+                                        <div class="form-group">
+                                            <label>Lease Duration (Years)</label>
+                                            <select id="lease-duration">
+                                                <option value="1">1 Year</option>
+                                                <option value="2">2 Years</option>
+                                                <option value="3" selected>3 Years</option>
+                                                <option value="5">5 Years</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Starting Base Rent ($/month)</label>
+                                            <input type="number" id="lease-base-rent" value="2500">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Free Rent Incentive (Months at start for Fit-out)</label>
+                                        <input type="number" id="lease-free-months" value="2" min="0" max="12">
+                                        <small>First N months will have $0 base rent.</small>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Rent Escalation Mechanism</label>
+                                        <div class="radio-toggle-group">
+                                            <label class="radio-label">
+                                                <input type="radio" name="escalation-type" value="percentage" checked>
+                                                <span>Fixed Percentage</span>
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="escalation-type" value="stepup">
+                                                <span>Step-up Prices</span>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Percentage Container -->
+                                    <div class="form-group" id="escalation-pct-container">
+                                        <label>Annual Escalation Rate (%)</label>
+                                        <input type="number" id="lease-escalation-pct" value="5" min="0" max="50">
+                                        <small>Price compounds N% higher every year.</small>
+                                    </div>
+
+                                    <!-- Step-up Container -->
+                                    <div class="form-group hidden" id="escalation-step-container">
+                                        <label>Step-up Rent Schedule ($/month)</label>
+                                        <div id="step-inputs-list">
+                                            <!-- Dynamically rendered depending on lease duration -->
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Bank Guarantee Amount ($)</label>
+                                        <input type="number" id="lease-guarantee-amt" value="7500">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Broker Commission Details</label>
+                                        <div class="form-group-row">
+                                            <input type="text" id="lease-broker-name" placeholder="Broker Name" value="Viet Nam Agents">
+                                            <input type="number" id="lease-broker-pct" placeholder="Commission %" value="10" min="0" max="100">
+                                        </div>
+                                        <small>Paid in 2 stages: 50% on deposit receipt, 50% on shop opening.</small>
+                                    </div>
+
+                                    <div class="form-actions">
+                                        <button type="button" class="btn btn-secondary" id="btn-preview-rentroll">Preview Rent Roll</button>
+                                        <button type="submit" class="btn btn-primary" id="btn-save-contract">Sign & Save Lease</button>
+                                    </div>
+                                </form>
+
+                                <!-- Rent Roll Preview Table -->
+                                <div class="rentroll-preview-box hidden" id="rentroll-preview-box">
+                                    <h4>Projected Cashflow Schedule</h4>
+                                    <div class="table-container compact">
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>Month</th>
+                                                    <th>Year</th>
+                                                    <th>Pricing Rule</th>
+                                                    <th>Monthly Rent</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="rentroll-preview-rows">
+                                                <!-- Dynamic rows -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Tab: Hangfire Billing -->
+                <section class="tab-pane" id="tab-billing">
+                    <div class="pane-header">
+                        <h2>Hangfire Automated Billing Engine</h2>
+                        <p>Monitors background billing queues. Triggers monthly rent, service charge, and utility invoicing.</p>
+                    </div>
+
+                    <div class="hangfire-dashboard">
+                        <!-- Hangfire Top Metrics -->
+                        <div class="hangfire-stats">
+                            <div class="h-stat-card">
+                                <span class="h-stat-label">Recurring Jobs</span>
+                                <span class="h-stat-value">2 Active</span>
+                            </div>
+                            <div class="h-stat-card">
+                                <span class="h-stat-label">Succeeded Jobs</span>
+                                <span class="h-stat-value" id="h-succeeded-count">0</span>
+                            </div>
+                            <div class="h-stat-card">
+                                <span class="h-stat-label">Failed Jobs</span>
+                                <span class="h-stat-value text-red">0</span>
+                            </div>
+                            <div class="h-stat-card active-jobs">
+                                <span class="h-stat-label">Current Task Status</span>
+                                <span class="h-stat-value" id="h-current-status">Idle</span>
+                            </div>
+                        </div>
+
+                        <!-- Trigger Billing Run Panel -->
+                        <div class="billing-trigger-panel">
+                            <div class="trigger-info">
+                                <h3>Batch Invoicing Run (Day 25 Simulation)</h3>
+                                <p>This job reads active lease rent tables, adds a fixed $150 Service Charge and random utility water/power readings, compiles invoices via QuestPDF, embeds a payment QR code, and triggers SMTP emails.</p>
+                            </div>
+                            <div class="trigger-actions">
+                                <button class="btn btn-primary btn-lg" id="btn-trigger-billing">
+                                    <i data-lucide="play"></i>
+                                    <span>Execute Billing Batch Job Now</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Progress Bar (Visible during execution) -->
+                        <div class="job-progress-container hidden" id="job-progress-container">
+                            <div class="progress-info">
+                                <span id="progress-job-name">Processing Monthly Billing Batch...</span>
+                                <span id="progress-pct">0%</span>
+                            </div>
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill" id="progress-bar-fill"></div>
+                            </div>
+                        </div>
+
+                        <!-- Logs and Executed Invoices -->
+                        <div class="hangfire-grid">
+                            <!-- Left: Hangfire Realtime Log -->
+                            <div class="dashboard-panel">
+                                <div class="panel-header">
+                                    <h3>Job Execution Log</h3>
+                                    <p>Standard out stream of Hangfire background tasks.</p>
+                                </div>
+                                <div class="panel-body log-console" id="billing-log-console">
+                                    <div class="log-line system">[System] Billing scheduler loaded. Recurring job set at 00:00 on the 25th of every month.</div>
+                                </div>
+                            </div>
+
+                            <!-- Right: Generated Invoices Ledger -->
+                            <div class="dashboard-panel">
+                                <div class="panel-header">
+                                    <h3>Compiled Invoices & Email Dispatch</h3>
+                                    <p>QuestPDF renderings generated during run.</p>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="table-container">
+                                        <table class="data-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Invoice ID</th>
+                                                    <th>Tenant</th>
+                                                    <th>Unit</th>
+                                                    <th>Billing Month</th>
+                                                    <th>Total Amount</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="invoice-rows">
+                                                <tr>
+                                                    <td colspan="6" class="text-center text-muted">No invoices generated yet. Execute the batch job to compile billing data.</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Tab: Architecture Visualizer -->
+                <section class="tab-pane" id="tab-architecture">
+                    <div class="pane-header">
+                        <h2>Clean Architecture Runtime Visualizer</h2>
+                        <p>Simulate, debug, and watch data travel across PMS layers in real-time.</p>
+                    </div>
+
+                    <div class="architecture-layout">
+                        <!-- Left Panel: Flow Deck -->
+                        <div class="arch-flow-deck">
+                            <div class="dashboard-panel">
+                                <div class="panel-header">
+                                    <h3>Select Architectural Flow</h3>
+                                    <p>Choose an operational use case to execute and visualize.</p>
+                                </div>
+                                <div class="panel-body flow-list">
+                                    
+                                    <div class="flow-option-card active" data-flow="crm-sync">
+                                        <div class="flow-opt-icon"><i data-lucide="refresh-cw"></i></div>
+                                        <div class="flow-opt-meta">
+                                            <h4>Flow A: CRM to Floor Plan Sync</h4>
+                                            <p>Stateless state transition triggers SignalR broadcasts to update space status UI.</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="flow-option-card" data-flow="batch-billing">
+                                        <div class="flow-opt-icon"><i data-lucide="receipt"></i></div>
+                                        <div class="flow-opt-meta">
+                                            <h4>Flow B: Batch Invoicing (Hangfire Run)</h4>
+                                            <p>Recurring worker triggers Rent Engine logic, pulls DB records, compiles PDFs, SMTP dispatch.</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="flow-option-card" data-flow="bi-kpi">
+                                        <div class="flow-opt-icon"><i data-lucide="bar-chart-3"></i></div>
+                                        <div class="flow-opt-meta">
+                                            <h4>Flow C: BI Dashboard Calculation</h4>
+                                            <p>LINQ aggregation triggers mathematical WAULT and Occupancy Rate calculations.</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <button class="btn btn-primary btn-lg" id="btn-play-arch-flow" style="width:100%; margin-top:1.5rem">
+                                        <i data-lucide="play-circle"></i>
+                                        <span>Play Simulation Flow</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Execution Explanations -->
+                            <div class="dashboard-panel" style="margin-top: 1.5rem">
+                                <div class="panel-header">
+                                    <h3>Execution Steps & Logs</h3>
+                                    <p>Detailed sequence tracking the architecture stack calls.</p>
+                                </div>
+                                <div class="panel-body execution-step-panel" id="arch-step-logs">
+                                    <div class="arch-log-empty">
+                                        <i data-lucide="info"></i>
+                                        <p>Click "Play Simulation Flow" to analyze real-time code execution trace.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Panel: Architectural Diagram -->
+                        <div class="arch-diagram-wrapper">
+                            <div class="layer-container">
+                                <!-- Data Packet Element (will be moved by JS) -->
+                                <div class="data-packet" id="arch-data-packet"></div>
+
+                                <!-- Presentation Layer -->
+                                <div class="arch-layer" id="layer-presentation">
+                                    <div class="layer-title">Presentation Layer (ASP.NET Core Web API)</div>
+                                    <div class="layer-blocks">
+                                        <div class="arch-block" id="block-client-ui">
+                                            <i data-lucide="monitor"></i>
+                                            <span>Client UI (React/Blazor)</span>
+                                        </div>
+                                        <div class="arch-block" id="block-web-api">
+                                            <i data-lucide="server"></i>
+                                            <span>Web API Controller</span>
+                                        </div>
+                                        <div class="arch-block" id="block-signalr-hub">
+                                            <i data-lucide="webhook"></i>
+                                            <span>SignalR Hub</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Core Domain Layer -->
+                                <div class="arch-layer" id="layer-core">
+                                    <div class="layer-title">Core / Domain Layer (Business Rules)</div>
+                                    <div class="layer-blocks">
+                                        <div class="arch-block" id="block-entities">
+                                            <i data-lucide="file-json"></i>
+                                            <span>Entities / Aggregates</span>
+                                        </div>
+                                        <div class="arch-block" id="block-stateless">
+                                            <i data-lucide="git-commit"></i>
+                                            <span>Stateless (CRM FSM)</span>
+                                        </div>
+                                        <div class="arch-block" id="block-rent-engine">
+                                            <i data-lucide="calculator"></i>
+                                            <span>Rent & Incentive Engine</span>
+                                        </div>
+                                        <div class="arch-block" id="block-bi-calc">
+                                            <i data-lucide="sigma"></i>
+                                            <span>BI Calculations (WAULT)</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Infrastructure Layer -->
+                                <div class="arch-layer" id="layer-infrastructure">
+                                    <div class="layer-title">Infrastructure Layer (External Adaptors)</div>
+                                    <div class="layer-blocks">
+                                        <div class="arch-block" id="block-efcore">
+                                            <i data-lucide="database-backup"></i>
+                                            <span>EF Core DbContext</span>
+                                        </div>
+                                        <div class="arch-block" id="block-hangfire">
+                                            <i data-lucide="clock"></i>
+                                            <span>Hangfire Background Job</span>
+                                        </div>
+                                        <div class="arch-block" id="block-questpdf">
+                                            <i data-lucide="file-text"></i>
+                                            <span>QuestPDF Compiler</span>
+                                        </div>
+                                        <div class="arch-block" id="block-mailkit">
+                                            <i data-lucide="mail"></i>
+                                            <span>MailKit Client</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Database / External Systems Layer -->
+                                <div class="arch-layer" id="layer-db">
+                                    <div class="layer-title">Database & External Systems</div>
+                                    <div class="layer-blocks">
+                                        <div class="arch-block" id="block-postgresql">
+                                            <i data-lucide="database"></i>
+                                            <span>PostgreSQL Database</span>
+                                        </div>
+                                        <div class="arch-block" id="block-mail-server">
+                                            <i data-lucide="send"></i>
+                                            <span>SMTP Email Server</span>
+                                        </div>
+                                        <div class="arch-block" id="block-iot-meters">
+                                            <i data-lucide="gauge"></i>
+                                            <span>IoT Smart Meters</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals & Toasts -->
+
+    <!-- Modal: QuestPDF Invoice Mockup -->
+    <div class="modal-backdrop hidden" id="invoice-modal">
+        <div class="modal-container modal-lg">
+            <div class="modal-header">
+                <h3>QuestPDF Export Viewer</h3>
+                <button class="btn-close-modal" id="close-invoice-modal">&times;</button>
+            </div>
+            <div class="modal-body bg-light">
+                <div class="invoice-pdf" id="invoice-pdf-content">
+                    <!-- Standard QuestPDF Mock layout -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="window.print()"><i data-lucide="printer"></i> Print Invoice</button>
+                <button class="btn btn-primary" id="btn-close-invoice-modal-bottom">Close Viewer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SignalR Toast Notification Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>

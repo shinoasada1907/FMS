@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commercial PMS - System Architecture & Roadmap Visualizer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="roadmap_style.css">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <!-- Top Horizontal Header Bar -->
+    <header class="roadmap-header">
+        <div class="header-brand">
+            <div class="brand-logo">
+                <i data-lucide="network"></i>
+            </div>
+            <div class="brand-text">
+                <h1>PMS-to-Enterprise Hub</h1>
+                <span>Hệ thống Tích hợp & Trung chuyển Dữ liệu Bất động sản</span>
+            </div>
+        </div>
+        <div class="header-status">
+            <span class="status-pulse"></span>
+            <span class="status-label">LIVE SIMULATOR ACTIVE</span>
+            <span class="version-tag">v1.0.0</span>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <div class="roadmap-workspace">
+        
+        <!-- LEFT SIDEBAR: 5-Week roadmap & SQL Schemas -->
+        <aside class="left-panel">
+            <!-- Part A: 5-Week Progress Roadmap -->
+            <div class="section-container">
+                <h3 class="section-title"><i data-lucide="calendar"></i> LỘ TRÌNH TRIỂN KHAI (5 TUẦN)</h3>
+                <p class="section-subtitle">Chọn từng tuần để xem thay đổi về kiến trúc & dữ liệu.</p>
+                
+                <div class="week-list">
+                    <div class="week-card active" data-week="1">
+                        <div class="week-meta">
+                            <span class="week-badge">TUẦN 1</span>
+                            <h4>Inbound CRM & Space DB</h4>
+                        </div>
+                        <div class="week-status-icon done"><i data-lucide="check"></i></div>
+                    </div>
+
+                    <div class="week-card" data-week="2">
+                        <div class="week-meta">
+                            <span class="week-badge">TUẦN 2</span>
+                            <h4>Escalation Rent Engine</h4>
+                        </div>
+                        <div class="week-status-icon done"><i data-lucide="check"></i></div>
+                    </div>
+
+                    <div class="week-card" data-week="3">
+                        <div class="week-meta">
+                            <span class="week-badge">TUẦN 3</span>
+                            <h4>Billing & Hangfire Job</h4>
+                        </div>
+                        <div class="week-status-icon done"><i data-lucide="check"></i></div>
+                    </div>
+
+                    <div class="week-card" data-week="4">
+                        <div class="week-meta">
+                            <span class="week-badge">TUẦN 4</span>
+                            <h4>Deposits & SignalR Hub</h4>
+                        </div>
+                        <div class="week-status-icon done"><i data-lucide="check"></i></div>
+                    </div>
+
+                    <div class="week-card" data-week="5">
+                        <div class="week-meta">
+                            <span class="week-badge">TUẦN 5</span>
+                            <h4>BI Dashboard & WAULT</h4>
+                        </div>
+                        <div class="week-status-icon done"><i data-lucide="check"></i></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part B: SQL Schema Database Viewer -->
+            <div class="section-container schema-container">
+                <h3 class="section-title"><i data-lucide="database"></i> DATABASE SCHEMA (POSTGRESQL)</h3>
+                <div class="schema-tree" id="db-schema-tree">
+                    <!-- Dinamic DB Schemas will render here depending on active week -->
+                </div>
+            </div>
+        </aside>
+
+        <!-- CENTER DECK: Interactive Architectural SVG Map -->
+        <main class="center-panel">
+            <div class="arch-map-card">
+                <div class="arch-map-header">
+                    <h3><i data-lucide="git-branch"></i> Bản đồ Kiến trúc Hệ thống (System Architecture Map)</h3>
+                    <div class="arch-legend">
+                        <span class="legend-item"><span class="dot peripheral"></span> Ngoại vi</span>
+                        <span class="legend-item"><span class="dot hub"></span> Hub Trung gian</span>
+                        <span class="legend-item"><span class="dot db"></span> Databases</span>
+                    </div>
+                </div>
+
+                <!-- SVG and HTML nodes container -->
+                <div class="arch-diagram-wrapper" id="arch-diagram-wrapper">
+                    <!-- Absolute SVG Layer for Path Connectors -->
+                    <svg class="arch-svg-connections" id="arch-svg-connections">
+                        <!-- Connecting lines with arrow markers -->
+                        <defs>
+                            <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                <path d="M 0 0 L 10 5 L 0 10 z" fill="#475569"/>
+                            </marker>
+                            <marker id="arrow-glow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                <path d="M 0 0 L 10 5 L 0 10 z" fill="#6366f1"/>
+                            </marker>
+                        </defs>
+                        <!-- Dynamic path connections overlayed -->
+                        <path id="path-ui-to-api" d="" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)" />
+                        <path id="path-api-to-stateless" d="" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)" />
+                        <path id="path-stateless-to-ef" d="" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)" />
+                        <path id="path-ef-to-pg" d="" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)" />
+                        
+                        <path id="path-hangfire-to-rent" d="" fill="none" stroke="#475569" stroke-width="2" stroke-dasharray="4" marker-end="url(#arrow)" />
+                        <path id="path-rent-to-ef" d="" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)" />
+                        <path id="path-hangfire-to-hgb" d="" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)" />
+                        
+                        <path id="path-api-to-bi" d="" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)" />
+                        <path id="path-bi-to-ef" d="" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)" />
+                        
+                        <path id="path-questpdf-to-email" d="" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)" />
+                        <path id="path-mailkit-to-smtp" d="" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)" />
+                        <path id="path-iot-to-api" d="" fill="none" stroke="#475569" stroke-width="2" stroke-dasharray="4" marker-end="url(#arrow)" />
+                        <path id="path-api-to-signalr" d="" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)" />
+                        <path id="path-signalr-to-ui" d="" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)" />
+                    </svg>
+
+                    <!-- Glowing Data Packet -->
+                    <div class="data-packet" id="arch-data-packet"></div>
+
+                    <!-- COLUMN 1: PERIPHERALS -->
+                    <div class="arch-column" id="col-peripherals">
+                        <!-- Client UI -->
+                        <div class="arch-block-card p-node" id="node-client-ui">
+                            <div class="node-icon"><i data-lucide="monitor"></i></div>
+                            <div class="node-text">
+                                <h4>Trình duyệt UI</h4>
+                                <span>React / Blazor Client</span>
+                            </div>
+                        </div>
+
+                        <!-- Email Client -->
+                        <div class="arch-block-card p-node" id="node-email-client">
+                            <div class="node-icon"><i data-lucide="mail"></i></div>
+                            <div class="node-text">
+                                <h4>Hóa Đơn PDF</h4>
+                                <span>Email Nhận/In ấn</span>
+                            </div>
+                        </div>
+
+                        <!-- Smart IoT Meters -->
+                        <div class="arch-block-card p-node" id="node-iot-meters">
+                            <div class="node-icon"><i data-lucide="gauge"></i></div>
+                            <div class="node-text">
+                                <h4>IoT Smart Meters</h4>
+                                <span>Gửi số điện/nước</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- COLUMN 2: .NET 8/9 CLEAN ARCHITECTURE INTEGRATION HUB -->
+                    <div class="arch-column hub-wrapper" id="col-hub">
+                        <div class="hub-container-border">
+                            <span class="hub-container-title">Commercial PMS Integration Hub (.NET 8/9)</span>
+                            <div class="hub-inner-grid">
+                                
+                                <!-- Web API Controller -->
+                                <div class="arch-block-card h-node" id="node-web-api">
+                                    <div class="node-icon"><i data-lucide="server"></i></div>
+                                    <div class="node-text">
+                                        <h4>Web API Controller</h4>
+                                        <span>RESTful API Ports</span>
+                                    </div>
+                                </div>
+
+                                <!-- Core Sync Logic / Rent Engine -->
+                                <div class="arch-block-card h-node" id="node-rent-engine">
+                                    <div class="node-icon"><i data-lucide="calculator"></i></div>
+                                    <div class="node-text">
+                                        <h4>Rent & Escalation</h4>
+                                        <span>Core Price Calculators</span>
+                                    </div>
+                                </div>
+
+                                <!-- Stateless Machine -->
+                                <div class="arch-block-card h-node" id="node-stateless">
+                                    <div class="node-icon"><i data-lucide="git-commit"></i></div>
+                                    <div class="node-text">
+                                        <h4>Stateless CRM</h4>
+                                        <span>State Machine Transitions</span>
+                                    </div>
+                                </div>
+
+                                <!-- Hangfire Scheduler -->
+                                <div class="arch-block-card h-node" id="node-hangfire">
+                                    <div class="node-icon"><i data-lucide="clock"></i></div>
+                                    <div class="node-text">
+                                        <h4>Hangfire Billing</h4>
+                                        <span>Batch Job Processing</span>
+                                    </div>
+                                </div>
+
+                                <!-- QuestPDF Compiler -->
+                                <div class="arch-block-card h-node" id="node-questpdf">
+                                    <div class="node-icon"><i data-lucide="file-text"></i></div>
+                                    <div class="node-text">
+                                        <h4>QuestPDF Compiler</h4>
+                                        <span>Invoice Layout Builder</span>
+                                    </div>
+                                </div>
+
+                                <!-- MailKit SMTP Engine -->
+                                <div class="arch-block-card h-node" id="node-mailkit">
+                                    <div class="node-icon"><i data-lucide="send"></i></div>
+                                    <div class="node-text">
+                                        <h4>MailKit Engine</h4>
+                                        <span>Async SMTP client</span>
+                                    </div>
+                                </div>
+
+                                <!-- SignalR Hub -->
+                                <div class="arch-block-card h-node" id="node-signalr">
+                                    <div class="node-icon"><i data-lucide="webhook"></i></div>
+                                    <div class="node-text">
+                                        <h4>SignalR Hub</h4>
+                                        <span>WebSocket Real-time</span>
+                                    </div>
+                                </div>
+
+                                <!-- BI KPI Calculator -->
+                                <div class="arch-block-card h-node" id="node-bi-calc">
+                                    <div class="node-icon"><i data-lucide="sigma"></i></div>
+                                    <div class="node-text">
+                                        <h4>BI WAULT Service</h4>
+                                        <span>Lease Analytics Core</span>
+                                    </div>
+                                </div>
+
+                                <!-- EF Core DbContext -->
+                                <div class="arch-block-card h-node full-width-node" id="node-efcore">
+                                    <div class="node-icon"><i data-lucide="database-backup"></i></div>
+                                    <div class="node-text">
+                                        <h4>EF Core DbContext</h4>
+                                        <span>Data Access & LINQ Mapper</span>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- COLUMN 3: DATABASES & TARGET SYSTEMS -->
+                    <div class="arch-column" id="col-databases">
+                        <!-- PostgreSQL Database -->
+                        <div class="arch-block-card d-node" id="node-postgresql">
+                            <div class="node-icon"><i data-lucide="database"></i></div>
+                            <div class="node-text">
+                                <h4>PostgreSQL DB</h4>
+                                <span>Properties/Leases/Rents</span>
+                            </div>
+                        </div>
+
+                        <!-- Hangfire Metadata DB -->
+                        <div class="arch-block-card d-node" id="node-hangfiredb">
+                            <div class="node-icon"><i data-lucide="folder-clock"></i></div>
+                            <div class="node-text">
+                                <h4>Hangfire Metadata</h4>
+                                <span>Job Logs & States</span>
+                            </div>
+                        </div>
+
+                        <!-- SMTP Mail Server -->
+                        <div class="arch-block-card d-node" id="node-mail-server">
+                            <div class="node-icon"><i data-lucide="server-crash"></i></div>
+                            <div class="node-text">
+                                <h4>Mail Server (SMTP)</h4>
+                                <span>Gửi email khách thuê</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- LOWER FOOTER DECK: Technical tasks & Live Simulators -->
+    <footer class="roadmap-footer">
+        
+        <!-- Left: Work Details Panel -->
+        <div class="footer-panel-left">
+            <div class="panel-card">
+                <div class="card-header">
+                    <span class="card-header-icon"><i data-lucide="align-left"></i></span>
+                    <h3 id="task-panel-title">Chi tiết Công việc: Tuần 1</h3>
+                    <span class="tech-stack-tag" id="task-tech-tag">.NET 8/9, EF Core, Stateless</span>
+                </div>
+                <div class="card-body scrollable-body" id="task-panel-content">
+                    <!-- Dynamic Work details in HTML/Markdown -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Live Flow Simulator Panel -->
+        <div class="footer-panel-right">
+            <div class="panel-card">
+                <div class="card-header">
+                    <span class="card-header-icon"><i data-lucide="play"></i></span>
+                    <h3>Trình mô phỏng Live (Live Flow Simulator)</h3>
+                    <div class="flow-selector-tabs">
+                        <span class="flow-tab active" data-flow-type="crm-sync">CRM Transaction</span>
+                        <span class="flow-tab" data-flow-type="batch-billing">Batch Billing Job</span>
+                        <span class="flow-tab" data-flow-type="bi-kpi">BI KPI Calculate</span>
+                    </div>
+                </div>
+                
+                <div class="card-body simulator-body">
+                    <div class="simulator-intro-text" id="sim-intro">
+                        Mô phỏng quy trình thay đổi trạng thái CRM của Lead, Stateless State Machine khóa căn và phát SignalR real-time đổi màu sàn.
+                    </div>
+                    
+                    <!-- Dynamic Simulator control deck depending on selected flow tab -->
+                    <div class="simulator-control-deck" id="sim-controls">
+                        <!-- Will render dynamically -->
+                    </div>
+
+                    <!-- Flow execution runner progress -->
+                    <div class="flow-runner-progress hidden" id="flow-runner-progress">
+                        <div class="flow-progress-meta">
+                            <span id="runner-step-title">Initializing...</span>
+                            <span id="runner-step-pct">0%</span>
+                        </div>
+                        <div class="flow-progress-bar">
+                            <div class="flow-progress-fill" id="runner-progress-fill"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Dashboard Floating button -->
+    <a href="index.html" class="floating-dashboard-btn" title="Back to PMS Operations Dashboard">
+        <i data-lucide="layout-dashboard"></i>
+        <span>PMS Dashboard</span>
+    </a>
+
+    <!-- Toast system -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="roadmap_app.js"></script>
+</body>
+</html>
